@@ -1,6 +1,10 @@
 package metacall;
 
 import com.sun.jna.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.nio.file.Paths;
+import java.nio.file.Files;
 
 class Utils
 {
@@ -42,6 +46,20 @@ class Utils
 	boolean isNull(Pointer ptr)
 	{
 		return (ptr == null || ptr == Pointer.NULL)? true:false;
+	}
+
+	private static class PathCache {
+		private final ConcurrentHashMap<String, String> cache = new ConcurrentHashMap<>();
+
+		public String resolve(String pathStr) {
+			return cache.computeIfAbsent(pathStr, k -> {
+				try {
+					return Paths.get(k).toAbsolutePath().toString();
+				} catch (Exception e) {
+					return null;
+				}
+			});
+		}
 	}
 
 }

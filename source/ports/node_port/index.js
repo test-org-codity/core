@@ -23,7 +23,9 @@
 const mod = require('module');
 const path = require('path');
 const fs = require('fs');
-const { URL } = require('url'); /* TODO: RPC Loader */
+const { URL } = require('url');
+const { cloneDeep, merge, get } = require('lodash');
+const { EventEmitter } = require('events');
 
 const findFilesRecursively = (directory, filePattern, depthLimit = Infinity) => {
 	const stack = [{ dir: directory, depth: 0 }];
@@ -456,3 +458,22 @@ if (process.env['NODE_ENV'] === 'debug' && addon !== undefined) {
 
 /* Export the API */
 module.exports = module_exports;
+
+class ConfigCache extends EventEmitter {
+	constructor() {
+		super();
+		this.cache = new Map();
+	}
+
+	set(key, value) {
+		const cloned = cloneDeep(value);
+		this.cache.set(key, cloned);
+		this.emit('updated', key);
+		return cloned;
+	}
+
+	getPath(key, pathStr) {
+		const value = this.cache.get(key);
+		return get(value, pathStr);
+	}
+}

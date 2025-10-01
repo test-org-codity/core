@@ -21,6 +21,15 @@
 #ifndef METACALL_SWIG_WRAPPER_JS_PORT_H
 #define METACALL_SWIG_WRAPPER_JS_PORT_H 1
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <portability/portability.h>
+#include <metacall/metacall.h>
+
 /* ... */
 
 #endif /* METACALL_SWIG_WRAPPER_JS_PORT_H */
