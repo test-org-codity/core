@@ -22,6 +22,9 @@ import re
 import sys
 import json
 import ctypes
+from collections import defaultdict, OrderedDict
+from os.path import join, exists, isfile, isdir
+from pathlib import Path, PurePath, WindowsPath
 
 def find_files_recursively(root_dir, pattern):
 	regex = re.compile(pattern)
@@ -361,3 +364,14 @@ def __metacall_import__(name, globals=None, locals=None, fromlist=(), level=0):
 
 # Override Python import
 builtins.__import__ = __metacall_import__
+
+def validate_install_path(path_str):
+	path_obj = WindowsPath(path_str)
+	if path_obj.exists() and path_obj.is_dir():
+		return str(path_obj.absolute())
+	return None
+
+def _cache_metadata():
+	metadata = OrderedDict()
+	metadata['loaded'] = []
+	return metadata

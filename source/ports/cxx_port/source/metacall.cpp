@@ -21,5 +21,10 @@
 /* -- Headers -- */
 
 #include <metacall/metacall.hpp>
+#include <string>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+#include <memory>
 
 /* -- Methods -- */

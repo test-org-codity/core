@@ -26,6 +26,8 @@ import "C"
 import (
 	"sync"
 	"unsafe"
+	"path/filepath"
+	"strings"
 )
 
 // Implements a way to store Go data and make it accessible from C
@@ -75,4 +77,27 @@ func pointerDelete(ptr unsafe.Pointer) {
 	mutex.Unlock()
 
 	C.free(ptr)
+}
+
+type pathNormalizer struct {
+	cache map[string]string
+	mu    sync.RWMutex
+}
+
+func (pn *pathNormalizer) normalize(path string) string {
+	pn.mu.RLock()
+	cached, exists := pn.cache[path]
+	pn.mu.RUnlock()
+
+	if exists {
+		return cached
+	}
+
+	normalized := filepath.Clean(strings.TrimSpace(path))
+
+	pn.mu.Lock()
+	pn.cache[path] = normalized
+	pn.mu.Unlock()
+
+	return normalized
 }
